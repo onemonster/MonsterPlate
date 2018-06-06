@@ -4,20 +4,15 @@ import createSagaMiddleware from 'redux-saga';
 import { createLogger } from 'redux-logger';
 import { navigationMiddleware } from '../navigation/reduxMiddleware';
 import nav from './nav';
-import example from '../screens/example/PostDetailScreen/redux';
+
+export const createReducer = (injectedReducers) => {
+  return combineReducers({
+    nav: nav.reducer,
+    ...injectedReducers,
+  })
+};
 
 export default () => {
-  const reducers = {
-    nav: nav.reducer,
-    example: example.reducer,
-  };
-
-  function * sagas () {
-    yield all([
-      example.sagas,
-    ].reduce((acc, cur) => [...acc, ...cur]))
-  }
-
   const middlewares = [];
 
   const sagaMiddleware = createSagaMiddleware();
@@ -28,9 +23,10 @@ export default () => {
   const logger = createLogger();
   middlewares.push(logger);
 
-  const store = compose(applyMiddleware(...middlewares))(createStore)(combineReducers(reducers));
-
-  sagaMiddleware.run(sagas);
+  const store = compose(applyMiddleware(...middlewares))(createStore)(createReducer());
+  store.injectedReducers = {};
+  store.injectedSagas = {};
+  store.runSaga = sagaMiddleware.run;
 
   return store;
 }

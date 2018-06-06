@@ -1,7 +1,9 @@
 import * as React from 'react';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { View, Button, Text } from 'react-native';
-import { actions } from './redux';
+import { actions, reducer, sagas } from './redux';
+import injectRedux from '../../../services/injectRedux';
 
 class PostDetailScreen extends React.PureComponent {
   constructor(props) {
@@ -41,11 +43,18 @@ class PostDetailScreen extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  post: state.example.post,
+  post: state.PostDetailScreen.post,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getPost: (id) => dispatch(actions.getPostRequest(id)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostDetailScreen);
+const withLogger = injectRedux('PostDetailScreen', reducer, sagas);
+
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
+
+export default compose(
+  withLogger,
+  withConnect
+)(PostDetailScreen);

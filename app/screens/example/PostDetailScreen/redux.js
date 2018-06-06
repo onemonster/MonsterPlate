@@ -40,5 +40,3 @@ function * getPost({ id }) {
 export const sagas = [
   takeLeading(types.GET_POST_REQUEST, getPost),
 ];
-
-export default { reducer, sagas };
