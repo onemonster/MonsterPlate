@@ -1,5 +1,4 @@
 import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
-import { all, fork, takeLatest } from 'redux-saga/effects'
 import createSagaMiddleware from 'redux-saga';
 import { createLogger } from 'redux-logger';
 import { navigationMiddleware } from '../navigation/reduxMiddleware';
